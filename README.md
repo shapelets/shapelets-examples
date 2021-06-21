@@ -1,11 +1,10 @@
 # shapelets-solo-examples
 
-A set of examples using shapelets-solo platform.
+A set of running data-apps examples for Shapelets platform.
 
 ## Requirements
 
-Have been installed the JVM.
-Have been installed shapelets-solo.
+This package requires the python package shapelets-solo and the Java JVM 1.8 to be installed before running the examples.
 
 ```shell
 pip install shapelets-solo
@@ -25,11 +24,11 @@ init_session("admin", "admin")
 
 ![init_session example](./images/code.png)
 
-These lines above starts a server in https://localhost:8443 by default and starts a session as admin.
+Above lines start a background process running the shapelets-server in https://localhost:8443 by default and starts a session as admin.
 
 ## GUI
 
-Shapelets provides you a web application we call **Cristal-UI**. After start shapelets with the cli or with init*session function the web application **Cristal-UI** is available in https://localhost:8443, so you can go to your favourite browser and type that in the url. Now you can go into **Cristal-UI** login with \_admin*, _admin_ credentials
+Shapelets brings a built-in web application, named **Cristal-UI**. After starting shapelets from the CLI or the init_session, the web application is available at https://localhost:8443. Once the server is up and running, you could go to your favourite browser and login into the web applications with _admin_ as user and _admin_ as password.
 
 ![Cristal-UI](./images/login.png)
 
