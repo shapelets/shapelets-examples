@@ -15,7 +15,7 @@ python -m shapelets install
 
 ## Run
 
-After the installation, you can run the application by typing `python -m shapelets start` from a terminal or runnning the script below in a python file or python cli.
+After the installation, you can run the application by typing `python -m shapelets start` from a terminal or running the script below in a python file or python cli.
 
 ```python
 from shapelets import init_session
@@ -28,7 +28,7 @@ Above lines start a background process running the shapelets-server in https://l
 
 ## GUI
 
-Shapelets brings a built-in web application, named **Cristal-UI**. After starting shapelets from the CLI or the init_session, the web application is available at https://localhost:8443. Once the server is up and running, you could go to your favourite browser and login into the web applications with _admin_ as user and _admin_ as password.
+Shapelets brings a built-in web application, named **Cristal-UI**. After starting shapelets from the CLI or the init*session, the web application is available at https://localhost:8443. Once the server is up and running, you could go to your favourite browser and login into the web applications with \_admin* as user and _admin_ as password.
 
 ![Cristal-UI](./images/login.png)
 
