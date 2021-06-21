@@ -15,7 +15,7 @@ python -m shapelets install
 
 ## Run
 
-After the installation, you can run the application by typing `python -m shapelets start` from a terminal or running the script below in a python file or python cli.
+After the installation, you can run the application by typing `python -m shapelets start` from a terminal or by running the script below in a python file or python cli.
 
 ```python
 from shapelets import init_session
