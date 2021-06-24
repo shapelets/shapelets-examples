@@ -14,22 +14,24 @@ client = init_session("admin", "admin")
 # Create a dataApp
 app = DataApp(
     name="17_fc_tc_composition",
-    description="17_fc_tc_composition"
+    description="This Dataapp shows how different filtering and temporal contexts can work concurrently"
 )
 
 app.markdown("""
     # Multiple Filtering contexts and temporal context
+
+    This Dataapp shows how different filtering and temporal contexts can work concurrently
 """)
 
 upload_enernoc_dataset(client)
 enernoc = get_enernoc_collection(client)
 enernoc_sequences = get_enernoc_sequences(client)
 
-# You can filter by industry metadata by clicking bars
+# Filter by industry metadata by clicking bars
 industry = app.metadata_field(field_name="INDUSTRY", field_type=MetadataType.STRING, collection=enernoc)
-# You can filter by subindustry metadata by clicking bars
+# Filter by subindustry metadata by clicking bars
 sub_industry = app.metadata_field(field_name="SUB_INDUSTRY", field_type=MetadataType.STRING, collection=enernoc)
-# You can filter by sq_ft metadata by presing shift and brushing over the chart
+# Filter by sq_ft metadata by presing shift and brushing over the chart
 sq_ft = app.metadata_field(field_name="SQ_FT", field_type=MetadataType.DOUBLE, collection=enernoc)
 
 # Create a filtering context

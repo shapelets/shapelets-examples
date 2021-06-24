@@ -21,9 +21,9 @@ upload_enernoc_dataset(client)
 enernoc = get_enernoc_collection(client)
 enernoc_sequences = get_enernoc_sequences(client)
 
-# You can filter by industry metadata by clicking bars
+# Filter by industry metadata by clicking bars
 industry = app.metadata_field(field_name="INDUSTRY", field_type=MetadataType.STRING, collection=enernoc)
-# You can filter by sq_ft metadata by presing shift and brushing over the chart
+# Filter by sq_ft metadata by presing shift and brushing over the chart
 sq_ft = app.metadata_field(field_name="SQ_FT", field_type=MetadataType.DOUBLE, collection=enernoc)
 
 # Create a filtering context
