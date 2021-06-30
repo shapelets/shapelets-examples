@@ -9,9 +9,11 @@ from shapelets.dsl.data_app import DataApp, NDArray
 from shapelets.dsl import dsl_op
 import numpy as np
 
+
 def concat_ndarrays(ndarray1: NDArray, ndarray2: NDArray) -> Tuple[NDArray, NDArray]:
-  newarray = np.hstack([ndarray1.values, ndarray2.values])
-  return NDArray(np.arange(newarray.size), name="X_Axis"), NDArray(newarray, name="Y_axis")
+    newarray = np.hstack([ndarray1.values, ndarray2.values])
+    return NDArray(np.arange(newarray.size), name="X_Axis"), NDArray(newarray, name="Y_axis")
+
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
@@ -20,16 +22,16 @@ client.register_custom_function(concat_ndarrays)
 
 # Create a dataApp
 app = DataApp(
-  name="19_concat_ndarrays",
-  description="This Dataapp concat two ndarrays"
+    name="19_concat_ndarrays",
+    description="This Dataapp concat two ndarrays"
 )
 
 app.place(app.markdown("""
   # This Dataapp concat two ndarrays
 """))
 
-y_axis1 = np.array([1,2,3,4,5])
-y_axis2 = np.array([6,7,8,9,10])
+y_axis1 = np.array([1, 2, 3, 4, 5])
+y_axis2 = np.array([6, 7, 8, 9, 10])
 
 button = app.button(text="Concat ndarrays")
 
@@ -43,8 +45,10 @@ button.on_click([x_axis_result, y_axis_result])
 app.place(button)
 
 line_chart = app.line_chart(x_axis=x_axis_result, y_axis=y_axis_result)
-
 app.place(line_chart)
+
+line_chart_without_xaxis = app.line_chart(y_axis=y_axis_result)
+app.place(line_chart_without_xaxis)
 
 # Register the Dataapp
 client.register_data_app(app)
