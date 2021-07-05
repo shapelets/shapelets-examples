@@ -16,7 +16,6 @@ def concat_ndarrays(ndarray1: NDArray, ndarray2: NDArray) -> Tuple[NDArray, NDAr
     newarray = np.hstack([ndarray1.values, ndarray2.values])
     return NDArray(np.arange(newarray.size), name="Categories"), NDArray(newarray, name="Data")
 
-
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
 
@@ -24,8 +23,8 @@ client.register_custom_function(concat_ndarrays)
 
 # Create a dataApp
 app = DataApp(
-    name="11_piechart_ndarray",
-    description="11_piechart_ndarray"
+    name="03_barchart_ndarray",
+    description="03_barchart_ndarray"
 )
 
 app.place(app.markdown("""
@@ -47,41 +46,41 @@ button.on_click([categories_result, data_result])
 app.place(button)
 
 app.place(app.markdown("""
-    # PieChart with categories and data from execution result
+    # BarChart with categories and data from execution result
 """))
 
-pie_chart = app.pie_chart(categories=categories_result, data=data_result)
-app.place(pie_chart)
+bar_chart = app.bar_chart(categories=categories_result, data=data_result)
+app.place(bar_chart)
 
-local_ndarray = client.create_nd_array(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), name="Local ndarray")
+local_ndarray = client.create_nd_array(np.array([0,1,2,3,4,5,6,7,8,9]), name="Local ndarray")
 
 app.place(app.markdown("""
-    # PieChart with categories set in place and data from execution result
+    # BarChart with categories set in place and data from execution result
 """))
 
-pie_chart_mix = app.pie_chart(categories=local_ndarray, data=data_result)
-app.place(pie_chart_mix)
+bar_chart_mix = app.bar_chart(categories=local_ndarray, data=data_result)
+app.place(bar_chart_mix)
 
 app.place(app.markdown("""
-    # PieChart with only data from execution result
+    # BarChart with only data from execution result
 """))
 
-pie_chart_without_categories = app.pie_chart(data=data_result)
-app.place(pie_chart_without_categories)
+bar_chart_without_categories = app.bar_chart(data=data_result)
+app.place(bar_chart_without_categories)
 
 app.place(app.markdown("""
-    # PieChart with only data from local
+    # BarChart with only data from local
 """))
 
-pie_chart_data_local = app.pie_chart(data=local_ndarray)
-app.place(pie_chart_data_local)
+bar_chart_data_local = app.bar_chart(data=local_ndarray)
+app.place(bar_chart_data_local)
 
 app.place(app.markdown("""
-    # PieChart with categories and data from local
+    # BarChart with categories and data from local
 """))
 
-pie_chart_categories_data_local = app.pie_chart(categories=local_ndarray, data=local_ndarray)
-app.place(pie_chart_categories_data_local)
+bar_chart_categories_data_local = app.bar_chart(categories=local_ndarray, data=local_ndarray)
+app.place(bar_chart_categories_data_local)
 
 # Register the Dataapp
 client.register_data_app(app)
