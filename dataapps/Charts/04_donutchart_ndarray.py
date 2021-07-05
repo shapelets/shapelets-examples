@@ -24,8 +24,8 @@ client.register_custom_function(concat_ndarrays)
 
 # Create a dataApp
 app = DataApp(
-    name="11_2_donutchart_ndarray",
-    description="11_2_donutchart_ndarray"
+    name="04_donutchart_ndarray",
+    description="04_donutchart_ndarray"
 )
 
 app.place(app.markdown("""
