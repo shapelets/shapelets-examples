@@ -23,8 +23,8 @@ client.register_custom_function(concat_ndarrays)
 
 # Create a dataApp
 app = DataApp(
-    name="10_barchart_ndarray",
-    description="10_barchart_ndarray"
+    name="03_barchart_ndarray",
+    description="03_barchart_ndarray"
 )
 
 app.place(app.markdown("""

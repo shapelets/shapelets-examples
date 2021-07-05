@@ -11,8 +11,8 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="13_horizontal_flow_panel",
-    description="13_horizontal_flow_panel"
+    name="01_horizontal_flow_panel",
+    description="01_horizontal_flow_panel"
 )
 
 # Create an horizontal_flow_panel

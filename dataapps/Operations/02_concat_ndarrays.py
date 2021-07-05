@@ -22,7 +22,7 @@ client.register_custom_function(concat_ndarrays)
 
 # Create a dataApp
 app = DataApp(
-    name="19_concat_ndarrays",
+    name="02_concat_ndarrays",
     description="This Dataapp concat two ndarrays"
 )
 

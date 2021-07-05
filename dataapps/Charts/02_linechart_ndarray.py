@@ -12,8 +12,8 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="09_linechart_ndarray",
-    description="09_linechart_ndarray"
+    name="02_linechart_ndarray",
+    description="02_linechart_ndarray"
 )
 
 # Create numpy arrays
