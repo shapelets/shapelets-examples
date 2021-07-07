@@ -13,28 +13,23 @@ import time
 import datetime
 
 def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection):
-    already_loaded = [
-        sequence.name for sequence in client.get_collection_sequences(collection)]
+    already_loaded = [sequence.name for sequence in client.get_collection_sequences(collection)]
     loaded = 0
     begin = time.time()
     all_begin = time.time()
     for column in df.columns:
         if column not in already_loaded:
             begin = time.time()
-            client.create_sequence(dataframe=df.loc[:, column].to_frame(), name=column, collection=collection)#, starts=np.datetime64(0,'Y'), every=1)
+            client.create_sequence(dataframe=df.loc[:, column].to_frame(), name=column, collection=collection)
             loaded += 1
     print(f"Loaded[{loaded}]:\t{column}\t{time.time() - begin}")
     print(f"Total elapsed: {time.time() - all_begin}​​​​​​​")
 
 
-def get_collection(client: Shapelets,
-collection_name: str,
-collection_description: str = "No description available"
-) -> Collection:
+def get_collection(client: Shapelets, collection_name: str, collection_description: str = "No description available") -> Collection:
     collections = client.get_collections()
     if collection_name not in [collection.name for collection in collections]:
-        client.create_collection(name=collection_name,
-description=collection_description)
+        client.create_collection(name=collection_name,description=collection_description)
     collections = client.get_collections()
     return next(col for col in collections if col.name == collection_name)
 
@@ -42,10 +37,7 @@ description=collection_description)
 client = init_session("admin", "admin")
 
 # Create a dataApp
-app = DataApp(
-    name="03_load_dataframe_with_time_series",
-    description="This Dataapp loads a dataframe containing time series"
-)
+app = DataApp(name="03_load_dataframe_with_time_series", description="This Dataapp loads a dataframe containing time series")
 
 app.place(app.markdown("""
   # This Dataapp loads a dataframe containing time series
