@@ -11,8 +11,8 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="14_grid_panel",
-    description="14_grid_panel"
+    name="02_grid_panel",
+    description="02_grid_panel"
 )
 
 # Create an grid_panel

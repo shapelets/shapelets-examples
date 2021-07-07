@@ -4,7 +4,7 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 from shapelets.model.metadata_item import MetadataType
-from util import get_enernoc_collection, get_enernoc_sequences, upload_enernoc_dataset
+from dataapps.util import get_enernoc_collection, get_enernoc_sequences, upload_enernoc_dataset
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 
@@ -13,7 +13,7 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="17_fc_tc_composition",
+    name="03_fc_tc_composition",
     description="This Dataapp shows how different filtering and temporal contexts can work concurrently"
 )
 

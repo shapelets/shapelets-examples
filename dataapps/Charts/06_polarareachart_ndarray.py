@@ -12,8 +12,8 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="12_polarareachart_ndarray",
-    description="12_polarareachart_ndarray"
+    name="06_polarareachart_ndarray",
+    description="06_polarareachart_ndarray"
 )
 
 # Create numpy arrays

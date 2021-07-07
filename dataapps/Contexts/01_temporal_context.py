@@ -6,15 +6,15 @@
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 
-from util import get_enernoc_sequences, upload_enernoc_dataset
+from dataapps.util import get_enernoc_sequences, upload_enernoc_dataset
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="15_temporal_context",
-    description="15_temporal_context"
+    name="01_temporal_context",
+    description="01_temporal_context"
 )
 
 upload_enernoc_dataset(client)
