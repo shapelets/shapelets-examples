@@ -43,24 +43,25 @@ app.place(app.markdown("""
   # This Dataapp loads a dataframe containing time series
 """))
 
-#Create a sample Dataframe with random integer values
+# Create a sample Dataframe with random integer values
 rng = pd.date_range(start = '2020-01-01', end = datetime.datetime.now(), freq='1d', tz = 'UTC')
 df = pd.DataFrame(index=rng, columns=['random_series']) 
 df['random_series'] = np.random.randint(0,100,df.shape[0])
 
-#Create an empty collection
+# Create an empty collection
 collection = get_collection(client, collection_name = "Dataframe collection",
                              collection_description="This is a collection including a Dataframe with a random time series")
 
-#Upload the dataframe into the collection
+# Upload the dataframe into the collection
 upload_sequences(client, df, collection)
 
-#Get the first column in the dataframe as a sequence
+# Get the first column in the dataframe as a sequence
 column = 0 
 seq = client.get_collection_sequences(collection)[column]
 
-#Create a line chart
+# Create a line chart
 line_chart = app.line_chart(title=seq.name, sequence=seq)
+
 # Place line_chart into the Dataapp
 app.place(line_chart)
 
