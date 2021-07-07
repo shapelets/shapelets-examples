@@ -12,6 +12,8 @@ def greater_than(x: int, y: int) -> str:
 # Init session
 client = init_session("admin", "admin")
 
+client.create_default_collections("ENERNOC")
+
 # Register custom function
 client.register_custom_function(greater_than)
 
