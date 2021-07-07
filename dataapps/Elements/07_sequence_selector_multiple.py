@@ -6,7 +6,7 @@
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 
-from util import get_enernoc_collection, upload_enernoc_dataset
+from dataapps.util import get_enernoc_collection, upload_enernoc_dataset
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
