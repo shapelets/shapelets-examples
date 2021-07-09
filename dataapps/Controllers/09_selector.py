@@ -15,7 +15,7 @@ def custom_print_integer(integer: int) -> int:
     return integer
 
 
-# This example work under 0.3.8 and above
+# This example works under 0.3.8 and above
 # Login into shapelets-solo
 client = init_session("admin", "admin")
 # Register a custom functions
