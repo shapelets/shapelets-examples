@@ -4,7 +4,7 @@ A set of running data-apps examples for Shapelets platform.
 
 ## Requirements
 
-This package requires the python package shapelets-solo and the Java JVM 1.8 to be installed before running the examples.
+This package requires the python package shapelets-solo, [Java OpenJDK](https://builds.openlogic.com/downloadJDK/openlogic-openjdk/8u292-b10/openlogic-openjdk-8u292-b10-windows-x64.msi) and [Visual C++ Redistributables](https://support.microsoft.com/en-us/topic/the-latest-supported-visual-c-downloads-2647da03-1eea-4433-9aff-95f26a218cc0) to be installed before running the examples. You can find detailed installation instructions in our [Wiki](https://github.com/shapelets/shapelets-solo-examples/wiki/Installation).
 
 ```shell
 pip install shapelets-solo
