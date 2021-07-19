@@ -48,7 +48,7 @@ soup = BeautifulSoup(html_doc.content, 'html.parser')
 section = soup.find(id='page').find_all('pre')
 csv_content = section[1].text
 
-df = pd.read_csv(io.StringIO(csv_content), header=None, skiprows=[0, 1], index_col=0, names=['MLII', 'V1'], nrows=10)
+df = pd.read_csv(io.StringIO(csv_content), header=None, skiprows=[0, 1], index_col=0, names=['MLII', 'V1'], nrows=1000)
 df.index = pd.to_datetime(df.index, unit='s')
 
 collection = get_collection(client, collection_name = "Arrythmia dataframe collection",
@@ -59,7 +59,7 @@ upload_sequences(client, df, collection)
 
 # Get the first column in the dataframe as a sequence
 seq0 = client.get_collection_sequences(collection)[0]
-#seq1 = client.get_collection_sequences(collection)[1]
+seq1 = client.get_collection_sequences(collection)[1]
 
 # Create temporal context
 tc = app.temporal_context("Temporal context")
@@ -68,8 +68,8 @@ tc = app.temporal_context("Temporal context")
 line_chart1 = app.line_chart(title='MLII', sequence=seq0, temporal_context=tc)
 app.place(line_chart1)
 
-#line_chart2 = app.line_chart(title='V1', sequence=seq1, temporal_context=tc)
-#app.place(line_chart2)
+line_chart2 = app.line_chart(title='V1', sequence=seq1, temporal_context=tc)
+app.place(line_chart2)
 
 # Register DataApp
 client.register_data_app(app)
