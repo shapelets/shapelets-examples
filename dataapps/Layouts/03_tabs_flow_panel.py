@@ -18,9 +18,11 @@ vf.place(app.markdown("""
     This markdown is rendered into the first tab
 """))
 
-vf.place(app.markdown("""
+vf2.place(app.markdown("""
     # MD for tab 2
     This markdown is rendered into the second tab
 """))
+
+app.place(tabs_fp)
 
 client.register_data_app(app)
