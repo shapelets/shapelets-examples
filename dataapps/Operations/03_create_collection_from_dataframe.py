@@ -37,33 +37,43 @@ def get_collection(client: Shapelets, collection_name: str, collection_descripti
 client = init_session("admin", "admin")
 
 # Create a dataApp
-app = DataApp(name="03_load_dataframe_with_time_series", description="This Dataapp loads a dataframe containing time series")
+app = DataApp(name="03_create_collection_from_dataframe",
+              description="This Dataapp creates a collection from a dataframe, uploads it, "
+                          "retrieves one of its columns as a sequence and plots it")
 
 app.place(app.markdown("""
-  # This Dataapp loads a dataframe containing time series
+  # This Dataapp creates a collection from a dataframe, uploads it, 
+    retrieves one of its columns as a sequence and plots it
 """))
 
-# Create a sample Dataframe with random integer values
+# Create a sample dataframe with a datetime index
 rng = pd.date_range(start = '2020-01-01', end = datetime.datetime.now(), freq='1d', tz = 'UTC')
-df = pd.DataFrame(index=rng, columns=['random_series']) 
-df['random_series'] = np.random.randint(0,100,df.shape[0])
+df = pd.DataFrame(index=rng, columns=['random_series'])
+
+# Add two columns with random integer values, from 0 to 10 and from 0 to 100
+df['random_series_10'] = np.random.randint(0,10,df.shape[0])
+df['random_series_100'] = np.random.randint(0,100,df.shape[0])
 
 # Create an empty collection
 collection = get_collection(client, collection_name = "Dataframe collection",
-                             collection_description="This is a collection including a Dataframe with a random time series")
+                             collection_description="This is a collection including a Dataframe with two random time series")
 
 # Upload the dataframe into the collection
 upload_sequences(client, df, collection)
 
-# Get the first column in the dataframe as a sequence
-column = 0 
-seq = client.get_collection_sequences(collection)[column]
+# Get the sequences from the collection, in the same column order as they appear in the dataframe
+# and holding the index information
+# Sequence indices start from 1 (0 corresponds to the dataframe index)
+seq_10 = client.get_collection_sequences(collection)[1]
+seq_100 = client.get_collection_sequences(collection)[2]
 
 # Create a line chart
-line_chart = app.line_chart(title=seq.name, sequence=seq)
+line_chart_10 = app.line_chart(title=seq_10.name, sequence=seq_10)
+line_chart_100 = app.line_chart(title=seq_100.name, sequence=seq_100)
 
 # Place line_chart into the Dataapp
-app.place(line_chart)
+app.place(line_chart_10)
+app.place(line_chart_100)
 
 # Register the Dataapp
 client.register_data_app(app)
