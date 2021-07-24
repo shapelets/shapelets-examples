@@ -16,19 +16,23 @@ import pandas as pd
 import numpy as np
 
 def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
-    from shapelets_worker.logger import get_logger
     starts = seq.axis_info.starts
     every = seq.axis_info.every
 
+    distances = profile.values[0]
     result = list()
-    start = 0
-    end = start + window_size
-    view_begin = starts + (start * every)
-    view_end = starts + (end * every)
-    get_logger().debug(f"{starts}, {every}, {view_begin}, {view_end}")
-    view = View(seq.sequence_id, view_begin, view_end)
-    result.append(view)
-    return result,0
+    for x in range(k):
+        anomaly_idx = np.array(distances).argmax()
+        start = anomaly_idx
+        end = start + window_size
+        view = View(seq.sequence_id, starts + (start * every), starts + (end * every))
+        result.append(view)
+        distances[(max(0, start - window_size)):(min(end + window_size, len(distances)))] = -np.inf
+
+    return result, 0
+
+def computeAvg(input1:NDArray, input2:NDArray)->NDArray:
+    return NDArray((input1.values+input2.values)/2.0)
 
 def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, price_type:str, window_size: int)->typing.Tuple[str,str,Sequence,Sequence,Sequence]:
     # Download maximum historical daily data available
@@ -82,11 +86,12 @@ def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, price_
 
 client = init_session("admin","admin")
 app = DataApp(name="01_anomaly_search_in_stocks_correlation",
-description="In this app, two stocks from the Spanish stock index are downloaded from Yahoo finance and their rolling "
+description="In this app, historical data from two stocks are downloaded from Yahoo finance and their rolling "
             "pearson correlation coefficient is computed. We then search for anomalies in their correlation.")
 
 # Register custom function
 client.register_custom_function(topk)
+client.register_custom_function(computeAvg)
 client.register_custom_function(downloadHistoricalDataComputeRollingPearson)
 
 # Get list of Yahoo symbols
@@ -127,11 +132,15 @@ name1, name2, prices1, prices2, rp = dsl.downloadHistoricalDataComputeRollingPea
                                                                                      price_type,
                                                                                      window_size)
 # Execute matrix profile algorithm
-mp = dsl.matrixProfileSelfJoin(rp, window_size)
-views, max = dsl.topk(rp, mp, k, window_size)
+mp1 = dsl.matrix_profile_self_join(prices1, window_size)
+mp2 = dsl.matrix_profile_self_join(prices2, window_size)
+mp_avg = dsl.computeAvg(mp1, mp2)
+mp_rp = dsl.matrix_profile_self_join(rp, window_size)
+views_rp, max_rp = dsl.topk(rp, mp_rp, k, window_size)
+views_avg, max_avg = dsl.topk(prices1, mp_avg, k, window_size)
 
 button2 = app.button("Execute anomaly-detection", text="Execute anomaly-detection")
-button2.on_click([name1, name2, prices1, prices2, rp, views, max])
+button2.on_click([name1, name2, prices1, prices2, rp, mp1, mp2, mp_avg, mp_rp, views_rp, views_avg])
 app.place(button2)
 
 # Create temporal context
@@ -149,8 +158,16 @@ line_chart2 = app.line_chart(title='Stock 2', sequence=prices2, temporal_context
 app.place(line_chart2)
 
 # Create rolling Pearson plot
-line_chart3 = app.line_chart(title='Rolling Pearson', sequence=rp, views=views, temporal_context=tc)
+line_chart3 = app.line_chart(title='Rolling Pearson', sequence=rp, views=views_rp, temporal_context=tc)
 app.place(line_chart3)
+
+# Create rolling Pearson plot
+line_chart4 = app.line_chart(title='Avg Profile Stock 1', sequence=prices1, views=views_avg, temporal_context=tc)
+app.place(line_chart4)
+
+# Create rolling Pearson plot
+line_chart5 = app.line_chart(title='Avg Profile Stock 1', sequence=prices2, views=views_avg, temporal_context=tc)
+app.place(line_chart5)
 
 # Register DataApp
 client.register_data_app(app)
