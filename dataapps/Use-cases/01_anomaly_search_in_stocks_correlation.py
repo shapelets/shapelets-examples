@@ -34,10 +34,15 @@ def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tu
 def computeAvg(input1:NDArray, input2:NDArray)->NDArray:
     return NDArray((input1.values+input2.values)/2.0)
 
-def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, price_type:str, window_size: int)->typing.Tuple[str,str,Sequence,Sequence,Sequence]:
+def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, history_size:str, price_type:str, window_size: int)->typing.Tuple[str,str,Sequence,Sequence,Sequence]:
     # Download maximum historical daily data available
     import yfinance as yf
-    df = yf.download(ticker1+ ' ' + ticker2, period = 'max')
+
+    df = yf.download(ticker1+ ' ' + ticker2, period=history_size)
+
+    # Use differences with price data
+    if price_type!='Volume':
+        df=df.diff()
 
     # Get companies' names
     name1 = yf.Ticker(ticker1).info['shortName']
@@ -56,7 +61,7 @@ def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, price_
     idx = pd.date_range(df.index[0].date(),df.index[-1].date())
     df = df.reindex(idx, fill_value=np.nan).fillna(method='ffill')
 
-    #Convert to Sequence
+    # Convert to Sequence
     p1 = kv.Array.from_numpy(df[price_type][ticker1].to_numpy(), khiva_type=kv.array.dtype.f64)
     p1_column_info_entry = ColumnProtoEntry(sourceName=price_type + ' '+ ticker2, columnProtoEntryDataType=DT_NUMERICAL)
     p1_column_info = ColumnProto(columnDimensions=UNIDIMENSIONAL, columnProtoEntries=[p1_column_info_entry])
@@ -103,10 +108,24 @@ symbols_df=pd.read_csv(io.StringIO(s.decode('utf-8')), header=None, names=['tick
 list_of_symbols = symbols_df['tickers'].values.tolist()
 
 # Set price type (Adj Close, Open, High, Low, Close or Volume)
-hpanel = app.horizontal_flow_panel("Select data to analyze: ")
+hpanel = app.horizontal_flow_panel("Select data to analyze and period of analysis: ")
 app.place(hpanel)
-price_type = app.selector(['Adj Close','Open','High','Low','Close','Volume'], value='Adj Close')
+price_type = app.selector([{'value':'Adj Close','label':'Δ Adj Close'},
+                           {'value':'Open','label':'Δ Open'},
+                           {'value':'High','label':'Δ High'},
+                           {'value':'Low','label':'Δ Low'},
+                           {'value':'Close','label':'Δ Close'},
+                           {'value':'Volume','label':'Volume'}], index_by='value', value_by='value', label_by='label', value='Adj Close')
 hpanel.place(price_type, width=6)
+
+history_size = app.selector([{'value':'6mo','label':'6 months'},
+                             {'value':'1y','label':'1 year'},
+                             {'value':'2y','label':'2 years'},
+                             {'value':'5y','label':'5 years'},
+                             {'value':'10y','label':'10 years'},
+                             {'value':'max','label':'Maximum'}], index_by='value', value_by='value', label_by='label', value='max')
+
+hpanel.place(history_size, width=6)
 
 # Create stock selectors
 hpanel1 = app.horizontal_flow_panel("Select stock symbols from Yahoo Finance: ")
@@ -123,12 +142,13 @@ window_size = app.number(name="Window size value", default_value=30, value_type=
 hpanel2.place(window_size, width=6)
 
 k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=1, max_value=20, step=1,
-                default_value=5, value_type=int)
+                default_value=3, value_type=int)
 hpanel2.place(k, width=6)
 
 # Download historical data and compute rolling Pearson
 name1, name2, prices1, prices2, rp = dsl.downloadHistoricalDataComputeRollingPearson(ticker1,
                                                                                      ticker2,
+                                                                                     history_size,
                                                                                      price_type,
                                                                                      window_size)
 # Execute matrix profile algorithm
@@ -158,15 +178,15 @@ line_chart2 = app.line_chart(title='Stock 2', sequence=prices2, temporal_context
 app.place(line_chart2)
 
 # Create rolling Pearson plot
-line_chart3 = app.line_chart(title='Rolling Pearson', sequence=rp, views=views_rp, temporal_context=tc)
+line_chart3 = app.line_chart(title='Avg Profile Stock 1', sequence=prices1, views=views_avg, temporal_context=tc)
 app.place(line_chart3)
 
 # Create rolling Pearson plot
-line_chart4 = app.line_chart(title='Avg Profile Stock 1', sequence=prices1, views=views_avg, temporal_context=tc)
+line_chart4 = app.line_chart(title='Avg Profile Stock 1', sequence=prices2, views=views_avg, temporal_context=tc)
 app.place(line_chart4)
 
 # Create rolling Pearson plot
-line_chart5 = app.line_chart(title='Avg Profile Stock 1', sequence=prices2, views=views_avg, temporal_context=tc)
+line_chart5 = app.line_chart(title='Rolling Pearson', sequence=rp, views=views_rp, temporal_context=tc)
 app.place(line_chart5)
 
 # Register DataApp
