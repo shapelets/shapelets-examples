@@ -24,11 +24,11 @@ init_session("admin", "admin")
 
 ![init_session example](./images/code.png)
 
-Above lines start a background process running the shapelets-server in https://localhost:8443 by default and starts a session as admin.
+Above lines start a background process running the shapelets-server in https://localhost by default and starts a session as admin.
 
 ## GUI
 
-Shapelets brings a built-in web application, named **Cristal-UI**. After starting shapelets from the CLI or the init*session, the web application is available at https://localhost:8443. Once the server is up and running, you could go to your favourite browser and login into the web applications with _admin_ as user and _admin_ as password.
+Shapelets brings a built-in web application, named **Cristal-UI**. After starting shapelets from the CLI or the init*session, the web application is available at https://localhost. Once the server is up and running, you could go to your favourite browser and login into the web applications with _admin_ as user and _admin_ as password.
 
 ![Cristal-UI](./images/login.png)
 
