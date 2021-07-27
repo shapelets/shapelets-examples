@@ -18,6 +18,22 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
+    starts = seq.axis_info.starts
+    every = seq.axis_info.every
+
+    distances = profile.values[0]
+    result = list()
+    for x in range(k):
+        anomaly_idx = np.array(distances).argmax()
+        start = anomaly_idx
+        end = start + window_size
+        view = View(seq.sequence_id, starts + (start * every), starts + (end * every))
+        result.append(view)
+        distances[(max(0, start - window_size)):(min(end + window_size, len(distances)))] = -np.inf
+
+    return result, 0
+
 def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection):
     already_loaded = [sequence.name for sequence in client.get_collection_sequences(collection)]
     loaded = 0
@@ -42,6 +58,9 @@ def get_collection(client: Shapelets, collection_name: str, collection_descripti
 client = init_session("admin","admin")
 app = DataApp(name="02_arrythmia_detection",
 description="In this app, data from the MIT-BIH Arrhythmia Database (mitdb) are retrieved.")
+
+# Register custom function
+client.register_custom_function(topk)
 
 html_doc = requests.get('https://archive.physionet.org/cgi-bin/atm/ATM?tool=samples_to_csv&database=mitdb&rbase=102')
 soup = BeautifulSoup(html_doc.content, 'html.parser')
