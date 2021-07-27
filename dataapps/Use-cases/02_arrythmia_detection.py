@@ -43,12 +43,12 @@ client = init_session("admin","admin")
 app = DataApp(name="02_arrythmia_detection",
 description="In this app, data from the MIT-BIH Arrhythmia Database (mitdb) are retrieved.")
 
-html_doc = requests.get('https://archive.physionet.org/cgi-bin/atm/ATM?tool=samples_to_csv&database=mitdb&rbase=103')
+html_doc = requests.get('https://archive.physionet.org/cgi-bin/atm/ATM?tool=samples_to_csv&database=mitdb&rbase=102')
 soup = BeautifulSoup(html_doc.content, 'html.parser')
 section = soup.find(id='page').find_all('pre')
 csv_content = section[1].text
 
-df = pd.read_csv(io.StringIO(csv_content), header=None, skiprows=[0, 1], index_col=0, names=['MLII', 'V1'], nrows=1000)
+df = pd.read_csv(io.StringIO(csv_content), header=None, index_col=0, names=['MLII', 'V1'], skiprows=50000, nrows=10000)
 df.index = pd.to_datetime(df.index, unit='s')
 
 collection = get_collection(client, collection_name = "Arrythmia dataframe collection",
@@ -61,14 +61,33 @@ upload_sequences(client, df, collection)
 seq0 = client.get_collection_sequences(collection)[0]
 seq1 = client.get_collection_sequences(collection)[1]
 
+# Add controllers
+hpanel = app.horizontal_flow_panel("Select input arguments: ")
+app.place(hpanel)
+window_size = app.number(name="Window size value", default_value=250, value_type=int)
+hpanel.place(window_size, width=6)
+
+#k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=1, max_value=20, step=1,
+#                default_value=1, value_type=int)
+#hpanel.place(k, width=6)
+k=app.number(value_type=int)
+hpanel.place(k,width=6)
+
+mp = dsl.matrix_profile_self_join(seq0, window_size)
+views, max = dsl.topk(seq0, mp, k, window_size)
+
+button = app.button("Execute anomaly-detection", text="Execute anomaly-detection")
+button.on_click([views])
+app.place(button)
+
 # Create temporal context
 tc = app.temporal_context("Temporal context")
 
-# Show companies' names and plot price data
-line_chart1 = app.line_chart(title='MLII', sequence=seq0, temporal_context=tc)
+# Show data
+line_chart1 = app.line_chart(title='MLII', sequence=seq0, views=views, temporal_context=tc)
 app.place(line_chart1)
 
-line_chart2 = app.line_chart(title='V1', sequence=seq1, temporal_context=tc)
+line_chart2 = app.line_chart(title='V1', sequence=seq1, views=views, temporal_context=tc)
 app.place(line_chart2)
 
 # Register DataApp

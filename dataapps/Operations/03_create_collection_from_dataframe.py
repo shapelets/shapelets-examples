@@ -43,8 +43,8 @@ app = DataApp(name="03_create_collection_from_dataframe",
 
 app.place(app.markdown("""
   # This Dataapp creates a collection from a dataframe, uploads it, 
-    retrieves one of its columns as a sequence and plots it
-"""))
+  retrieves one of its columns as a sequence and plots it
+""".replace("\n","")))
 
 # Create a sample dataframe with a datetime index
 rng = pd.date_range(start = '2020-01-01', end = datetime.datetime.now(), freq='1d', tz = 'UTC')
