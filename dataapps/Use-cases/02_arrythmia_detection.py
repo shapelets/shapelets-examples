@@ -67,7 +67,7 @@ soup = BeautifulSoup(html_doc.content, 'html.parser')
 section = soup.find(id='page').find_all('pre')
 csv_content = section[1].text
 
-df = pd.read_csv(io.StringIO(csv_content), header=None, index_col=0, names=['MLII', 'V1'], skiprows=50000, nrows=10000)
+df = pd.read_csv(io.StringIO(csv_content), header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
 df.index = pd.to_datetime(df.index, unit='s')
 
 collection = get_collection(client, collection_name = "Arrythmia dataframe collection",
@@ -86,11 +86,9 @@ app.place(hpanel)
 window_size = app.number(name="Window size value", default_value=250, value_type=int)
 hpanel.place(window_size, width=6)
 
-#k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=1, max_value=20, step=1,
-#                default_value=1, value_type=int)
-#hpanel.place(k, width=6)
-k=app.number(value_type=int)
-hpanel.place(k,width=6)
+k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=1, max_value=20, step=1,
+                default_value=1, value_type=int)
+hpanel.place(k, width=6)
 
 mp = dsl.matrix_profile_self_join(seq0, window_size)
 views, max = dsl.topk(seq0, mp, k, window_size)
