@@ -1,3 +1,2 @@
 shapelets-solo==0.3.14
 yfinance==0.1.63
-bs4==0.0.1
