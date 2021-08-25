@@ -14,26 +14,16 @@ from keras.layers import Dense
 from numpy.random import seed
 from tensorflow import random
 
-def trainAndRunKerasInference(model:Capsule, train_x:Capsule, train_y:Capsule, input:Capsule)->typing.Tuple[float, float]:
-    from keras import Sequential
-    from keras.layers import Dense
+def trainAndRunKerasInference(model_json:Capsule, train_x:Capsule, train_y:Capsule, input:Capsule)->typing.Tuple[float, float]:
+    from keras.models import model_from_json
+    model = model_from_json(model_json.data)
 
-    model2 = Sequential()
-    model2.add(Dense(64, input_dim=3, activation='relu'))
-    model2.add(Dense(64, activation='relu'))
-    model2.add(Dense(2))
-    model2.compile(loss='mse')
-
-    from shapelets_worker.logger import get_logger
-
-    get_logger().debug(str(type(model2)) + ' ' + str(model2))
-    get_logger().debug(str(type(model.data))+' '+str(model.data))
-
-    # Train the model
-    #model.data.fit(train_x.data, train_y.data)
+    # Compile and train the model
+    model.compile(loss='mse')
+    model.fit(train_x.data, train_y.data)
 
     # Run prediction on input values
-    preds = model.data.predict(np.array([[0.5, 0.7, 0.9]]))
+    preds = model.predict(input.data)
 
     return preds[0][0], preds[0][1]
 
@@ -66,10 +56,9 @@ model = Sequential()
 model.add(Dense(64, input_dim=3, activation='relu'))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(2))
-model.compile(loss='mse')
 
 # Convert the model into a Capsule
-model_capsule = Capsule(data=model, name='model')
+model_json = Capsule(data=model.to_json(), name='model')
 
 # Create some training data, labels and an input array and convert them to Capsules
 train_x = Capsule(data = np.asarray([[0, 0, 0], [0, 1, 1], [1, 0, 0], [1, 1, 1]]),name='train_x')
@@ -77,7 +66,7 @@ train_y = Capsule(data = np.asarray([[0.0, 1.0],[1.0, 0.0],[0.5, 0.5],[1.0, 0.5]
 input = Capsule(data = np.asarray([[0.5, 0.7, 0.9]]),name='input')
 
 # Pass model, training data and sample and run inference
-output1, output2 = dsl_op.trainAndRunKerasInference(model_capsule, train_x, train_y, input)
+output1, output2 = dsl_op.trainAndRunKerasInference(model_json, train_x, train_y, input)
 
 # Convert the output into a displayable string
 output_string = dsl_op.buildStringWithOutput(output1, output2)
