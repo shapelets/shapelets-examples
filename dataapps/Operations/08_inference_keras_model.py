@@ -9,7 +9,7 @@ from shapelets.dsl.data_app import DataApp, NDArray
 from shapelets.dsl import dsl_op
 import numpy as np
 
-def runKerasInference(train_x:NDArray, train_y:NDArray, input:NDArray)->typing.Tuple[float, float]:
+def trainAndRunKerasInference(train_x:NDArray, train_y:NDArray, input:NDArray)->typing.Tuple[float, float]:
     from keras import Sequential
     from keras.layers import Dense
     from numpy.random import seed
@@ -24,9 +24,7 @@ def runKerasInference(train_x:NDArray, train_y:NDArray, input:NDArray)->typing.T
     model.add(Dense(64, input_dim=3, activation='relu'))
     model.add(Dense(64, activation='relu'))
     model.add(Dense(2))
-    model.compile(loss='binary_crossentropy',
-                  optimizer='adam',
-                  metrics=['accuracy'])
+    model.compile(loss='mse')
 
     # Train the model
     model.fit(train_x.values, train_y.values)
@@ -53,16 +51,16 @@ app.place(app.markdown("""
 """))
 
 # Register two functions, one to run the inference and another one to format the output into a text string
-client.register_custom_function(runKerasInference,persist_results=False)
+client.register_custom_function(trainAndRunKerasInference,persist_results=False)
 client.register_custom_function(buildStringWithOutput,persist_results=False)
 
 # Create some training data, labels and an input array and convert them to NDArrays
 train_x = client.create_nd_array(np.asarray([[0, 0, 0], [0, 1, 1], [1, 0, 0], [1, 1, 1]]))
-train_y = client.create_nd_array(np.asarray([0, 1, 1, 0]))
+train_y = client.create_nd_array(np.asarray([[0.0, 1.0],[1.0, 0.0],[0.5, 0.5],[1.0, 0.5]]))
 input = client.create_nd_array(np.asarray([[0.5, 0.7, 0.9]]))
 
-# Run inference and get two outputs from model
-output1, output2 = dsl_op.runKerasInference(train_x, train_y, input)
+# Train, run inference and get two outputs from model
+output1, output2 = dsl_op.trainAndRunKerasInference(train_x, train_y, input)
 
 # Convert the output into a displayable string
 output_string = dsl_op.buildStringWithOutput(output1, output2)
