@@ -23,7 +23,7 @@ def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection
             client.create_sequence(dataframe=df.loc[:, column].to_frame(), name=column, collection=collection)
             loaded += 1
     print(f"Loaded[{loaded}]:\t{column}\t{time.time() - begin}")
-    print(f"Total elapsed: {time.time() - all_begin}​​​​​​​")
+    print(f"Total elapsed: {time.time() - all_begin}")
 
 
 def get_collection(client: Shapelets, collection_name: str, collection_description: str = "No description available") -> Collection:

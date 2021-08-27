@@ -35,12 +35,12 @@ def computeAvg(input1:NDArray, input2:NDArray)->NDArray:
     return NDArray((input1.values+input2.values)/2.0)
 
 def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, history_size:str, price_type:str, window_size: int)->typing.Tuple[str,str,Sequence,Sequence,Sequence]:
-    # Download maximum historical daily data available
+    # Download maximum historical daily Data available
     import yfinance as yf
 
     df = yf.download(ticker1+ ' ' + ticker2, period=history_size)
 
-    # Use differences with price data
+    # Use differences with price Data
     if price_type!='Volume':
         df=df.diff()
 
@@ -48,7 +48,7 @@ def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, histor
     name1 = yf.Ticker(ticker1).info['shortName']
     name2 = yf.Ticker(ticker2).info['shortName']
 
-    # Clear dates with no data available
+    # Clear dates with no Data available
     df.dropna(inplace=True)
 
     #Compute rolling Pearson coefficient
@@ -91,7 +91,7 @@ def downloadHistoricalDataComputeRollingPearson(ticker1:str, ticker2:str, histor
 
 client = init_session("admin","admin")
 app = DataApp(name="01_anomaly_search_in_stocks_correlation",
-description="In this app, historical data from two stocks are downloaded from Yahoo finance and their rolling "
+description="In this app, historical Data from two stocks are downloaded from Yahoo finance and their rolling "
             "pearson correlation coefficient is computed. We then search for anomalies in their correlation.")
 
 # Register custom function
@@ -108,7 +108,7 @@ symbols_df=pd.read_csv(io.StringIO(s.decode('utf-8')), header=None, names=['tick
 list_of_symbols = symbols_df['tickers'].values.tolist()
 
 # Set price type (Adj Close, Open, High, Low, Close or Volume)
-hpanel = app.horizontal_flow_panel("Select data to analyze and period of analysis: ")
+hpanel = app.horizontal_flow_panel("Select Data to analyze and period of analysis: ")
 app.place(hpanel)
 price_type = app.selector([{'value':'Adj Close','label':'Δ Adj Close'},
                            {'value':'Open','label':'Δ Open'},
@@ -145,7 +145,7 @@ k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=
                 default_value=3, value_type=int)
 hpanel2.place(k, width=6)
 
-# Download historical data and compute rolling Pearson
+# Download historical Data and compute rolling Pearson
 name1, name2, prices1, prices2, rp = dsl.downloadHistoricalDataComputeRollingPearson(ticker1,
                                                                                      ticker2,
                                                                                      history_size,
@@ -166,7 +166,7 @@ app.place(button2)
 # Create temporal context
 tc = app.temporal_context("Temporal context")
 
-# Show companies' names and plot price data
+# Show companies' names and plot price Data
 label1 = app.label(name1)
 app.place(label1)
 line_chart1 = app.line_chart(title='Stock 1', sequence=prices1, temporal_context=tc)
