@@ -1,4 +1,4 @@
-# shapelets-solo-examples
+# shapelets-examples
 
 A set of running data-apps examples for Shapelets platform.
 
