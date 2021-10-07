@@ -3,11 +3,10 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
-import random
 
+import shapelets.dsl.dsl_op as dsl_op
 from shapelets import init_session
 from shapelets.dsl import DataApp
-import shapelets.dsl.dsl_op as dsl_op
 
 
 def custom_random(a: int, b: int) -> int:

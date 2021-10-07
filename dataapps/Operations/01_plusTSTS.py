@@ -4,10 +4,11 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.W
 
-from dataapps.util import get_enernoc_collection, upload_enernoc_dataset
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 from shapelets.dsl import dsl_op
+
+from dataapps.util import get_enernoc_collection, upload_enernoc_dataset
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
@@ -43,7 +44,7 @@ app.place(line_chart)
 
 button = app.button(text="Execute plusTSTS")
 
-sequence_result = dsl_op.plusTSTS(sequence_selected, sequence_selected2)
+sequence_result = dsl_op.plus_ts_ts(sequence_selected, sequence_selected2)
 
 button.on_click(sequence_result)
 

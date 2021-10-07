@@ -3,11 +3,13 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
+
+import numpy as np
 from typing import Tuple
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp, NDArray
 from shapelets.dsl import dsl_op
-import numpy as np
 
 
 def concat_ndarrays(ndarray1: NDArray, ndarray2: NDArray) -> Tuple[NDArray, NDArray]:
@@ -51,7 +53,7 @@ app.place(app.markdown("""
 line_chart = app.line_chart(x_axis=x_axis_result, y_axis=y_axis_result)
 app.place(line_chart)
 
-local_ndarray = client.create_nd_array(np.array([0,1,2,3,4,5,6,7,8,9]), name="Local ndarray")
+local_ndarray = client.create_nd_array(np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]), name="Local ndarray")
 
 app.place(app.markdown("""
     # LineChart with x_axis set in place and y_axis from execution result
