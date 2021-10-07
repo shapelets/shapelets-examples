@@ -3,13 +3,14 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
-from typing import Tuple
 
 import numpy as np
+from typing import Tuple
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
-from shapelets.model import NDArray
 from shapelets.dsl import dsl_op
+from shapelets.model import NDArray
 
 
 def computed_linechart(name: str) -> Tuple[str, NDArray]:

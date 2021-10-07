@@ -1,15 +1,11 @@
-# Copyright (c) 2020 Shapelets.io
-#
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 # Copyright (c) 2021 Grumpy Cat Software S.L.
 #
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
+
 import numpy as np
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 

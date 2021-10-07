@@ -3,17 +3,20 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
+
+import io
+import numpy as np
+import pandas as pd
+import requests
+import typing
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 from shapelets.model import Sequence
 from shapelets.dsl import dsl_op as dsl
 from shapelets.model.view_match import View
 from shapelets.model.ndarray import NDArray
-import typing
-import io
-import requests
-import pandas as pd
-import numpy as np
+
 
 def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
     starts = seq.axis_info.starts

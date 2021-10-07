@@ -3,17 +3,18 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
-from shapelets import init_session
-from shapelets.dsl.data_app import DataApp
-from shapelets import Shapelets
-from shapelets.model import Collection
+
 import time
-from shapelets.model import Sequence
+import pandas as pd
+import typing
+
+from shapelets import init_session, Shapelets
+from shapelets.dsl.data_app import DataApp
 from shapelets.dsl import dsl_op as dsl
+from shapelets.model import Collection, Sequence
 from shapelets.model.view_match import View
 from shapelets.model.ndarray import NDArray
-import typing
-import pandas as pd
+
 
 def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
     starts = seq.axis_info.starts
@@ -31,6 +32,7 @@ def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tu
 
     return result, 0
 
+
 def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection):
     already_loaded = [sequence.name for sequence in client.get_collection_sequences(collection)]
     loaded = 0
@@ -45,16 +47,18 @@ def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection
     print(f"Total elapsed: {time.time() - all_begin}​​​​​​​")
 
 
-def get_collection(client: Shapelets, collection_name: str, collection_description: str = "No description available") -> Collection:
+def get_collection(client: Shapelets, collection_name: str,
+                   collection_description: str = "No description available") -> Collection:
     collections = client.get_collections()
     if collection_name not in [collection.name for collection in collections]:
-        client.create_collection(name=collection_name,description=collection_description)
+        client.create_collection(name=collection_name, description=collection_description)
     collections = client.get_collections()
     return next(col for col in collections if col.name == collection_name)
 
-client = init_session("admin","admin")
+
+client = init_session("admin", "admin")
 app = DataApp(name="02_arrythmia_detection",
-description="In this app, Data from the MIT-BIH Arrhythmia Database (mitdb) are analyzed looking for premature ventricular contractions (PVC).")
+              description="In this app, Data from the MIT-BIH Arrhythmia Database (mitdb) are analyzed looking for premature ventricular contractions (PVC).")
 
 # Register custom function
 client.register_custom_function(topk)
@@ -62,8 +66,8 @@ client.register_custom_function(topk)
 df = pd.read_csv('../Data/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
 df.index = pd.to_datetime(df.index, unit='s')
 
-collection = get_collection(client, collection_name = "Arrythmia dataframe collection",
-                             collection_description="This is a collection including ECG Data from the MIT-BIH Arrythmia Database")
+collection = get_collection(client, collection_name="Arrythmia dataframe collection",
+                            collection_description="This is a collection including ECG Data from the MIT-BIH Arrythmia Database")
 
 # Upload the dataframe into the collection
 upload_sequences(client, df, collection)
@@ -79,7 +83,7 @@ window_size = app.number(name="Window size value", default_value=250, value_type
 hpanel.place(window_size, width=6)
 
 k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=1, max_value=20, step=1,
-                default_value=1, value_type=int)
+               default_value=1, value_type=int)
 hpanel.place(k, width=6)
 
 mp = dsl.matrix_profile_self_join(seq0, window_size)

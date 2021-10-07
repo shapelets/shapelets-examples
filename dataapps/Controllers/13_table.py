@@ -4,15 +4,16 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-"""Use this file to create example dataApps"""
-from shapelets import init_session
 import pandas as pd
+
+from shapelets import init_session
 from shapelets.dsl import DataApp, dsl_op
 from shapelets.model import Dataframe
 
 
 def computed_dataframe(df: Dataframe) -> Dataframe:
     return df
+
 
 client = init_session("admin", "admin")
 

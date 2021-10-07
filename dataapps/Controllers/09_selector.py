@@ -3,13 +3,15 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
+
+import shapelets.dsl.dsl_op as dsl_op
 from shapelets import init_session
 from shapelets.dsl import DataApp
-import shapelets.dsl.dsl_op as dsl_op
 
 
 def custom_print(text: str) -> str:
     return text
+
 
 def custom_print_integer(integer: int) -> int:
     return integer

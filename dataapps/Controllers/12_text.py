@@ -3,10 +3,10 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 from shapelets.dsl import dsl_op
-import time
 
 
 def custom_print_text(text: str) -> str:
