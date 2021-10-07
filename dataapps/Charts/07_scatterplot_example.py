@@ -14,7 +14,7 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="07_scatterplot_ndarray",
+    name="07_scatterplot_example",
     description="07_scatterplot_ndarray"
 )
 
