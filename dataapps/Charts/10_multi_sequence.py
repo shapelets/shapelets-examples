@@ -4,7 +4,6 @@
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
 
-"""Use this file to create example dataApps"""
 from shapelets import init_session
 from shapelets.dsl import dsl_op
 from shapelets.dsl.data_app import DataApp
