@@ -59,8 +59,8 @@ app.place(selector_strings)
 client.register_custom_function(get_int)
 selected = dsl_op.get_int(3)
 
-selector_dicts = app.selector(options=output_ints, value=selected)
-app.place(selector_dicts)
+selector_initial_value = app.selector(options=output_ints, value=selected)
+app.place(selector_initial_value)
 
 # Create button to get computed parameters
 button = app.button(text="Compute options")
