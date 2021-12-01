@@ -3,11 +3,11 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
-from shapelets import init_session
-from shapelets.dsl import dsl_op
-from shapelets.dsl.data_app import DataApp
+
 import pandas as pd
-import numpy as np
+
+from shapelets import init_session
+from shapelets.dsl.data_app import DataApp
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
@@ -22,7 +22,7 @@ app.place(app.markdown("""
 # Create a sample Dataframe with names and ages
 Name = ['tom', 'krish', 'nick', 'juli']
 Age = [25, 30, 26, 22]
-df = pd.DataFrame(list(zip(Name, Age)), columns = ['Name', 'Age'])
+df = pd.DataFrame(list(zip(Name, Age)), columns=['Name', 'Age'])
 
 # Create NDArrays
 data1_ndarray = client.create_nd_array(df['Name'].to_numpy(dtype='str'))

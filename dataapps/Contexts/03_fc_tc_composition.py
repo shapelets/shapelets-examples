@@ -3,10 +3,12 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
-from shapelets.model.metadata_item import MetadataType
-from dataapps.util import get_enernoc_collection, get_enernoc_sequences, upload_enernoc_dataset
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
+from shapelets.model.metadata_item import MetadataType
+
+from dataapps.util import get_enernoc_collection, get_enernoc_sequences, upload_enernoc_dataset
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
@@ -53,7 +55,8 @@ tc = app.temporal_context("My temporal context")
 # Add filtering context into line_chart allow us filter sequences sequences
 # by metadata with cross filters
 for index, seq in enumerate(enernoc_sequences):
-    line_chart = app.line_chart(title=seq.name, sequence=seq, filtering_context=(fc if index % 2 == 0 else fc2), temporal_context=tc)
+    line_chart = app.line_chart(title=seq.name, sequence=seq, filtering_context=(fc if index % 2 == 0 else fc2),
+                                temporal_context=tc)
     app.place(line_chart)
 
 # Register the Dataapp

@@ -14,7 +14,10 @@ from keras.layers import Dense
 from numpy.random import seed
 from tensorflow import random
 
-def trainAndRunKerasInference(model_json:Capsule, train_x:Capsule, train_y:Capsule, input:Capsule)->typing.Tuple[float, float]:
+def trainAndRunKerasInference(model_json:Capsule,
+                              train_x:Capsule,
+                              train_y:Capsule,
+                              input:Capsule)->typing.Tuple[float, float]:
     from keras.models import model_from_json
     model = model_from_json(model_json.data)
 
@@ -35,7 +38,7 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="09_inference_keras_model_capsules",
+    name="10_inference_keras_model_capsules",
     description="This Dataapp creates a Keras model, passes the training data and an input, and performs inference using data capsules"
 )
 

@@ -3,14 +3,17 @@
 # This Source Code is licensed under the MIT 2.0 license.
 # the terms can be found in LICENSE.md at the root of
 # this project, or at http://mozilla.org/MPL/2.0/.
+
+import datetime
+import numpy as np
+import pandas as pd
+import time
+
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 from shapelets import Shapelets
 from shapelets.model import Collection
-import pandas as pd
-import numpy as np
-import time
-import datetime
+
 
 def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection):
     already_loaded = [sequence.name for sequence in client.get_collection_sequences(collection)]
@@ -23,15 +26,17 @@ def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection
             client.create_sequence(dataframe=df.loc[:, column].to_frame(), name=column, collection=collection)
             loaded += 1
     print(f"Loaded[{loaded}]:\t{column}\t{time.time() - begin}")
-    print(f"Total elapsed: {time.time() - all_begin}")
+    print(f"Total elapsed: {time.time() - all_begin}​​​​​​​")
 
 
-def get_collection(client: Shapelets, collection_name: str, collection_description: str = "No description available") -> Collection:
+def get_collection(client: Shapelets, collection_name: str,
+                   collection_description: str = "No description available") -> Collection:
     collections = client.get_collections()
     if collection_name not in [collection.name for collection in collections]:
-        client.create_collection(name=collection_name,description=collection_description)
+        client.create_collection(name=collection_name, description=collection_description)
     collections = client.get_collections()
     return next(col for col in collections if col.name == collection_name)
+
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")
@@ -44,19 +49,19 @@ app = DataApp(name="03_create_collection_from_dataframe",
 app.place(app.markdown("""
   # This Dataapp creates a collection from a dataframe, uploads it, 
   retrieves one of its columns as a sequence and plots it
-""".replace("\n","")))
+""".replace("\n", "")))
 
 # Create a sample dataframe with a datetime index
-rng = pd.date_range(start = '2020-01-01', end = datetime.datetime.now(), freq='1d', tz = 'UTC')
+rng = pd.date_range(start='2020-01-01', end=datetime.datetime.now(), freq='1d', tz='UTC')
 df = pd.DataFrame(index=rng, columns=['random_series'])
 
 # Add two columns with random integer values, from 0 to 10 and from 0 to 100
-df['random_series_10'] = np.random.randint(0,10,df.shape[0])
-df['random_series_100'] = np.random.randint(0,100,df.shape[0])
+df['random_series_10'] = np.random.randint(0, 10, df.shape[0])
+df['random_series_100'] = np.random.randint(0, 100, df.shape[0])
 
 # Create an empty collection
-collection = get_collection(client, collection_name = "Dataframe collection",
-                             collection_description="This is a collection including a Dataframe with two random time series")
+collection = get_collection(client, collection_name="Dataframe collection",
+                            collection_description="This is a collection including a Dataframe with two random time series")
 
 # Upload the dataframe into the collection
 upload_sequences(client, df, collection)

@@ -42,7 +42,7 @@ client = init_session("admin", "admin")
 
 # Create a dataApp
 app = DataApp(
-    name="08_inference_keras_model",
+    name="09_inference_keras_model",
     description="This Dataapp creates a Keras model and performs inference of a given input"
 )
 
