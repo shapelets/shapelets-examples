@@ -27,7 +27,7 @@ from sklearn.metrics import roc_curve, confusion_matrix
 
 # Initialize a session and create the DataApp
 client = init_session("admin","admin")
-app = DataApp(name="bank_customer_churn_prediction",
+app = DataApp(name="01_bank_customer_churn_prediction",
 description="In this dataapp, a study of churn in bank customers is performed.")
 
 # Read the data
@@ -361,7 +361,7 @@ app.place(img8)
 md8 = app.markdown('''
 The previous figure shows a confusion matrix for a very characteristic point in the ROC curve: the one that '''+
 '''corresponds to a precision of 50% (half of the predicted churning customers actually do churn).'''+
-'''With a precision of 50%, a recall of around 21% and a FPR of 7% is obtained. This recall tells us that the model'''+
+'''With a precision of 50%, a recall of around 21% and a FPR of 7% is obtained. This recall tells us that the model '''+
 '''is able to highlight 21% of all customers who churned. The FPR of 7% indicates that, out of all '''+
 '''customers that the model thinks will not churn, around 7% actually did churn. \n
 
