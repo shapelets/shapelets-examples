@@ -59,7 +59,7 @@ md = app.markdown("""
 app.place(md)
 
 # Load the data into a dataframe
-df = pd.read_csv('../Data/nab/realKnownCause/machine_temperature_system_failure.csv', low_memory=False)
+df = pd.read_csv('../Data/nab/realKnownCause/machine_temperature_system_failure.csv')
 
 df['timestamp'] = pd.to_datetime(df['timestamp'],format="%Y-%m-%d %H:%M:%S")
 
@@ -211,7 +211,7 @@ In this section we will try to find a model that can help us predict abnormal po
 We will compare the performance of these methods using four metrics:
 - Missed alarm rate, that describes the amount of false negatives with respect to all abnormal data points.
 - False alarm rate, that describes the amount of false positives with respect to all regular data points.
-- F1-score, a common metric that describes the goodness of a binary classifier.
+- Recall, a common metric that measures the amount of true positives (anomalies) predicted with respect to all positives.
 - Execution time, which describes the speed of each algorithm.
 """)
 app.place(md9)
@@ -295,58 +295,39 @@ mp_time = time.time() - start_time
 hotelling_conf_matrix = confusion_matrix(df['anomaly'], hotelling_df['anomaly'])
 hotelling_FAR=hotelling_conf_matrix[0][1]/(hotelling_conf_matrix[0][1]+hotelling_conf_matrix[0][0])
 hotelling_MAR=hotelling_conf_matrix[1][0]/(hotelling_conf_matrix[1][1]+hotelling_conf_matrix[1][0])
-hotelling_auc = roc_auc_score(df['anomaly'], hotelling_df['anomaly'])
-hotelling_precision = precision_score(df['anomaly'], hotelling_df['anomaly'])
 hotelling_recall = recall_score(df['anomaly'], hotelling_df['anomaly'])
-hotelling_f1 = f1_score(df['anomaly'], hotelling_df['anomaly'])
 
 ocsvm_conf_matrix = confusion_matrix(df['anomaly'], ocsvm_df['anomaly'])
 ocsvm_FAR=ocsvm_conf_matrix[0][1]/(ocsvm_conf_matrix[0][1]+ocsvm_conf_matrix[0][0])
 ocsvm_MAR=ocsvm_conf_matrix[1][0]/(ocsvm_conf_matrix[1][1]+ocsvm_conf_matrix[1][0])
-ocsvm_auc = roc_auc_score (df['anomaly'], ocsvm_df['anomaly'])
-ocsvm_precision = precision_score(df['anomaly'], ocsvm_df['anomaly'])
 ocsvm_recall = recall_score(df['anomaly'], ocsvm_df['anomaly'])
-ocsvm_f1 = f1_score(df['anomaly'], ocsvm_df['anomaly'])
+
 
 iforest_conf_matrix = confusion_matrix(df['anomaly'], iforest_df['anomaly'])
 iforest_FAR=iforest_conf_matrix[0][1]/(iforest_conf_matrix[0][1]+iforest_conf_matrix[0][0])
 iforest_MAR=iforest_conf_matrix[1][0]/(iforest_conf_matrix[1][1]+iforest_conf_matrix[1][0])
-iforest_auc = roc_auc_score (df['anomaly'], iforest_df['anomaly'])
-iforest_precision = precision_score(df['anomaly'], iforest_df['anomaly'])
 iforest_recall = recall_score(df['anomaly'], iforest_df['anomaly'])
-iforest_f1 = f1_score(df['anomaly'], iforest_df['anomaly'])
 
 lof_conf_matrix = confusion_matrix(df['anomaly'], lof_df['anomaly'])
 lof_FAR=lof_conf_matrix[0][1]/(lof_conf_matrix[0][1]+lof_conf_matrix[0][0])
 lof_MAR=lof_conf_matrix[1][0]/(lof_conf_matrix[1][1]+lof_conf_matrix[1][0])
-lof_auc = roc_auc_score (df['anomaly'], lof_df['anomaly'])
-lof_precision = precision_score(df['anomaly'], lof_df['anomaly'])
 lof_recall = recall_score(df['anomaly'], lof_df['anomaly'])
-lof_f1 = f1_score(df['anomaly'], lof_df['anomaly'])
 
 ch_conf_matrix = confusion_matrix(df['anomaly'], ch_df['anomaly'])
 ch_FAR=ch_conf_matrix[0][1]/(ch_conf_matrix[0][1]+ch_conf_matrix[0][0])
 ch_MAR=ch_conf_matrix[1][0]/(ch_conf_matrix[1][1]+ch_conf_matrix[1][0])
-ch_auc = roc_auc_score (df['anomaly'], ch_df['anomaly'])
-ch_precision = precision_score(df['anomaly'], ch_df['anomaly'])
 ch_recall = recall_score(df['anomaly'], ch_df['anomaly'])
-ch_f1 = f1_score(df['anomaly'], ch_df['anomaly'])
+
 
 sigma_conf_matrix = confusion_matrix(df['anomaly'], sigma_df['anomaly'])
 sigma_FAR=sigma_conf_matrix[0][1]/(sigma_conf_matrix[0][1]+sigma_conf_matrix[0][0])
 sigma_MAR=sigma_conf_matrix[1][0]/(sigma_conf_matrix[1][1]+sigma_conf_matrix[1][0])
-sigma_auc = roc_auc_score (df['anomaly'], sigma_df['anomaly'])
-sigma_precision = precision_score(df['anomaly'], sigma_df['anomaly'])
 sigma_recall = recall_score(df['anomaly'], sigma_df['anomaly'])
-sigma_f1 = f1_score(df['anomaly'], sigma_df['anomaly'])
 
 mp_conf_matrix = confusion_matrix(df['anomaly'], mp_df['anomaly'])
 mp_FAR=mp_conf_matrix[0][1]/(mp_conf_matrix[0][1]+mp_conf_matrix[0][0])
 mp_MAR=mp_conf_matrix[1][0]/(mp_conf_matrix[1][1]+mp_conf_matrix[1][0])
-mp_auc = roc_auc_score (df['anomaly'], mp_df['anomaly'])
-mp_precision = precision_score(df['anomaly'], mp_df['anomaly'])
 mp_recall = recall_score(df['anomaly'], mp_df['anomaly'])
-mp_f1 = f1_score(df['anomaly'], mp_df['anomaly'])
 
 fig22 = plt.figure(figsize=(10,4))
 scores = [hotelling_MAR,ocsvm_MAR,iforest_MAR,lof_MAR,ch_MAR,sigma_MAR,mp_MAR]
@@ -367,19 +348,21 @@ app.place(img21)
 md10 = app.markdown("""
 Depending on the cost of a missed alarm and the cost of verifying an alarm, some models may be more interesting """
 """than others. As in many classification problems, a tradeoff has to be found between a large number of """
-"""false alarms or missed issues. In general, a good choice will correspond to the model with the highest F1-score.""")
+"""false alarms or missed issues. In this context of anomaly detection, in which not detecting an anomaly can """
+"""cause the shutdown of the machine or the industrial process, recall (detected anomalies over total """
+"""number of anomalies) is in general another good metric to choose.""")
 app.place(md10)
 
 fig18 = plt.figure(figsize=(10,4))
-scores = [hotelling_f1,ocsvm_f1,iforest_f1,lof_f1,ch_f1,sigma_f1,mp_f1]
+scores = [hotelling_recall,ocsvm_recall,iforest_recall,lof_recall,ch_recall,sigma_recall,mp_recall]
 names = ['hotelling','ocsvm','iforest','lof','ch','sigma','matrix profile']
-plt.title('F-1 score for all methods tested')
+plt.title('Recall for all methods tested')
 plt.bar(names,height=scores)
 img18 = Image(fig18)
 app.place(img18)
 
-md11 = app.markdown("""
-Both Hotelling's T^2 and the standard deviation model show the best performance, with similar results between """
+md11 = app.markdown("""One-class SVM and iForest show high recall, but their false alarm rate is also quite high. """
+"""Both Hotelling's T^2 and the standard deviation model show a good tradeoff, with similar results between """
 """both of them. Let's compare the speed of these algorithms.""")
 app.place(md11)
 
@@ -395,7 +378,8 @@ app.place(img22)
 md12 = app.markdown("""
 Both algorithms also show similar execution times. Although Hotelling's T^2 seems to perform slightly better, we"""
 """ will choose the standard deviation method due to its simplicity, as it only has one parameter. Let's try to """
-""" run a parameter search on this model to try to further improve it.""")
+""" run a parameter search on this model to try to further improve it. In this case, we will minimize the sum of """
+""" the missed alarm rate and the false alarm rate.""")
 app.place(md12)
 
 # Sigma model optimization
@@ -403,20 +387,23 @@ sigma_df = pd.DataFrame()
 sigma_df['value'] = df['value']
 mean = sigma_df['value'].mean()
 std = sigma_df['value'].std()
-f1_sigma_list = []
-space = np.arange(1.3,1.7,0.01)
+param_list = []
+space = np.arange(0.5,2.0,0.01)
 for k in space:
     sigma_df['anomaly_threshold_3r'] = mean + k*std
     sigma_df['anomaly_threshold_3l'] = mean - k*std
     sigma_df['anomaly'] = sigma_df.apply(lambda x : 1 if (x['value'] > x['anomaly_threshold_3r']) or
                                                          (x['value'] < x['anomaly_threshold_3l']) else 0, axis=1)
-    f1_sigma_list.append(f1_score(df['anomaly'], sigma_df['anomaly']))
+    sigma_conf_matrix = confusion_matrix(df['anomaly'], sigma_df['anomaly'])
+    sigma_FAR = sigma_conf_matrix[0][1] / (sigma_conf_matrix[0][1] + sigma_conf_matrix[0][0])
+    sigma_MAR = sigma_conf_matrix[1][0] / (sigma_conf_matrix[1][1] + sigma_conf_matrix[1][0])
+    param_list.append(sigma_FAR+sigma_MAR)
 
-opt_thr = space[f1_sigma_list.index(max(f1_sigma_list))]
+opt_thr = space[param_list.index(min(param_list))]
 
 fig24 = plt.figure(figsize=(10,4))
-plt.plot(space,f1_sigma_list)
-plt.title('F1-score for different thresholds')
+plt.plot(space,param_list)
+plt.title('Recall for different thresholds')
 plt.axvline(x=opt_thr,color='r')
 img24 = Image(fig24)
 app.place(img24)
@@ -445,14 +432,14 @@ app.place(img25)
 md14 = app.markdown("""
 The previous figure shows the detected anomalies in green, the false negatives in red and the false alarms in """
 """yellow. While the number of missed alarms is quite high (there is an alarm every time the temperature drops """
-"""below 65 degrees), all missed alarms are always preceded by detected anomalies, indicating that the system """
-"""could be safely used for predictive maintenance.
+"""below 65 or above 100 degrees Celsius), all missed alarms are always preceded by detected anomalies, indicating """
+"""that the system could be safely used for predictive maintenance.
 
 ## Conclusion
 
 In this data app, we have shown how anomaly detection can be used in order to prevent machine failures. We have """ 
 """explored a dataset with labelled anomalies, compared various models using relevant metrics and optimized on the """
-"""best models, achieving a missed alarm rate of 60% and a false alarm rate of 2%.""")
+"""best models, achieving a missed alarm rate of 39% and a false alarm rate of 6%.""")
 app.place(md14)
 
 # Register the DataApp
