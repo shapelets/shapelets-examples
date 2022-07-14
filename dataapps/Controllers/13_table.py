@@ -19,7 +19,7 @@ client = init_session("admin", "admin")
 
 client.register_custom_function(computed_dataframe)
 
-df = pd.read_csv('../Data/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
+df = pd.read_csv('dataapps/Data/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
 df.index = pd.to_datetime(df.index, unit='s')
 
 df_result = client.create_dataframe(df, name="Example dataframe", description="Example description")

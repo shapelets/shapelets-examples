@@ -15,15 +15,18 @@ from shapelets.model import Collection, Sequence
 from shapelets.model.view_match import View
 from shapelets.model.ndarray import NDArray
 
+def topk(seq: Sequence, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
+    from shapelets_compute.compute.matrixprofile import matrix_profile
+    import shapelets_compute.compute as sc
 
-def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
     starts = seq.axis_info.starts
     every = seq.axis_info.every
-
-    distances = profile.values[0]
+    s = sc.array(seq.values)
+    mp = matrix_profile(s,window_size)
+    distances = np.array(mp.profile)
     result = list()
     for x in range(k):
-        anomaly_idx = np.array(distances).argmax()
+        anomaly_idx = distances.argmax()
         start = anomaly_idx
         end = start + window_size
         view = View(seq.sequence_id, starts + (start * every), starts + (end * every))
@@ -43,9 +46,8 @@ def upload_sequences(client: Shapelets, df: pd.DataFrame, collection: Collection
             begin = time.time()
             client.create_sequence(dataframe=df.loc[:, column].to_frame(), name=column, collection=collection)
             loaded += 1
-    print(f"Loaded[{loaded}]:\t{column}\t{time.time() - begin}")
-    print(f"Total elapsed: {time.time() - all_begin}​​​​​​​")
-
+            print(f"Loaded[{loaded}]:\t{column}\t{time.time() - begin}")
+    print(f"Total elapsed: {time.time() - all_begin}")
 
 def get_collection(client: Shapelets, collection_name: str,
                    collection_description: str = "No description available") -> Collection:
@@ -63,7 +65,7 @@ app = DataApp(name="02_arrythmia_detection",
 # Register custom function
 client.register_custom_function(topk)
 
-df = pd.read_csv('../Data/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
+df = pd.read_csv('dataapps/Data/mitdb102.csv', header=None, index_col=0, names=['MLII', 'V1'], skiprows=200000, nrows=20000)
 df.index = pd.to_datetime(df.index, unit='s')
 
 collection = get_collection(client, collection_name="Arrythmia dataframe collection",
@@ -86,8 +88,7 @@ k = app.slider(name="K value", title="Desired number of anomalies: ", min_value=
                default_value=1, value_type=int)
 hpanel.place(k, width=6)
 
-mp = dsl.matrix_profile_self_join(seq0, window_size)
-views, max = dsl.topk(seq0, mp, k, window_size)
+views, max = dsl.topk(seq0, k, window_size)
 
 button = app.button("Execute anomaly-detection", text="Execute anomaly-detection")
 button.on_click([views])
@@ -105,3 +106,4 @@ app.place(line_chart2)
 
 # Register DataApp
 client.register_data_app(app)
+

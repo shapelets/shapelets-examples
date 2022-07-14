@@ -63,7 +63,7 @@ app.place(label2)
 
 # Selector with dict values, index_by, label_by and value_by property
 selector3 = app.selector([{"id": 1, "hello": "world", "foo": "bar"}, {"id": 2, "hello": "moon", "foo": "baz"}],
-                         index_by="id", label_by="hello",
+                          label_by="hello",
                          value_by="foo")
 app.place(selector3)
 

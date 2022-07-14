@@ -7,7 +7,13 @@
 from shapelets import init_session
 from shapelets.dsl.data_app import DataApp
 
-from dataapps.util import get_enernoc_sequences, upload_enernoc_dataset
+import os, sys, inspect 
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
+from util import upload_enernoc_dataset, get_enernoc_sequences
 
 # Start shapelets process and init session as admin
 client = init_session("admin", "admin")

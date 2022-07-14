@@ -18,14 +18,18 @@ from shapelets.model.view_match import View
 from shapelets.model.ndarray import NDArray
 
 
-def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
+def topk(seq: Sequence, k: int, window_size: int) -> typing.Tuple[typing.List[View], int]:
+    from shapelets_compute.compute.matrixprofile import matrix_profile
+    import shapelets_compute.compute as sc
+
     starts = seq.axis_info.starts
     every = seq.axis_info.every
-
-    distances = profile.values[0]
+    s = sc.array(seq.values)
+    mp = matrix_profile(s,window_size)
+    distances = np.array(mp.profile)
     result = list()
     for x in range(k):
-        anomaly_idx = np.array(distances).argmax()
+        anomaly_idx = distances.argmax()
         start = anomaly_idx
         end = start + window_size
         view = View(seq.sequence_id, starts + (start * every), starts + (end * every))
@@ -33,6 +37,7 @@ def topk(seq: Sequence, profile: NDArray, k: int, window_size: int) -> typing.Tu
         distances[(max(0, start - window_size)):(min(end + window_size, len(distances)))] = -np.inf
 
     return result, 0
+
 
 def computeAvg(input1:NDArray, input2:NDArray)->NDArray:
     return NDArray((input1.values+input2.values)/2.0)
@@ -118,7 +123,7 @@ price_type = app.selector([{'value':'Adj Close','label':'Δ Adj Close'},
                            {'value':'High','label':'Δ High'},
                            {'value':'Low','label':'Δ Low'},
                            {'value':'Close','label':'Δ Close'},
-                           {'value':'Volume','label':'Volume'}], index_by='value', value_by='value', label_by='label', value='Adj Close')
+                           {'value':'Volume','label':'Volume'}], value_by='value', label_by='label', value='Adj Close')
 hpanel.place(price_type, width=6)
 
 history_size = app.selector([{'value':'6mo','label':'6 months'},
@@ -126,7 +131,7 @@ history_size = app.selector([{'value':'6mo','label':'6 months'},
                              {'value':'2y','label':'2 years'},
                              {'value':'5y','label':'5 years'},
                              {'value':'10y','label':'10 years'},
-                             {'value':'max','label':'Maximum'}], index_by='value', value_by='value', label_by='label', value='max')
+                             {'value':'max','label':'Maximum'}], value_by='value', label_by='label', value='max')
 
 hpanel.place(history_size, width=6)
 
@@ -155,15 +160,13 @@ name1, name2, prices1, prices2, rp = dsl.downloadHistoricalDataComputeRollingPea
                                                                                      price_type,
                                                                                      window_size)
 # Execute matrix profile algorithm
-mp1 = dsl.matrix_profile_self_join(prices1, window_size)
-mp2 = dsl.matrix_profile_self_join(prices2, window_size)
-mp_avg = dsl.computeAvg(mp1, mp2)
-mp_rp = dsl.matrix_profile_self_join(rp, window_size)
-views_rp, max_rp = dsl.topk(rp, mp_rp, k, window_size)
-views_avg, max_avg = dsl.topk(prices1, mp_avg, k, window_size)
+
+
+views_rp, max_rp = dsl.topk(rp, k, window_size)
+views_avg, max_avg = dsl.topk(prices1, k, window_size)
 
 button2 = app.button("Execute anomaly-detection", text="Execute anomaly-detection")
-button2.on_click([name1, name2, prices1, prices2, rp, mp1, mp2, mp_avg, mp_rp, views_rp, views_avg])
+button2.on_click([name1, name2, prices1, prices2, rp, views_rp, views_avg])
 app.place(button2)
 
 # Create temporal context

@@ -8,6 +8,11 @@ from typing import List
 from shapelets.model import Sequence
 from shapelets.shapelets import Shapelets
 
+import os, sys, inspect 
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
 
 # EnerNOC is a dataset of energetic consumtion
 # We use this dataset to show you a battery of examples
